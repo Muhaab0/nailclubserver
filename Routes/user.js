@@ -8,8 +8,7 @@ import Tecniqal from "../models/Tecniqal.js";
 import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId;
 import multer from "multer"
-import UserImages from "../models/userImages.js";
-
+import UserImages from "../models/UserImages.js"
 
 const FILE_TYPE_MAP = {
     "image/png": "png",
