@@ -6,13 +6,13 @@ import morgan from "morgan"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 dotenv.config();
-import ProductRouter from "./routes/product.js"
-import CategoryRouter from "./routes/categories.js"
-import userRouter from "./routes/user.js"
-import orderRouter from "./routes/order.js"
-import servicesRouter from "./routes/services.js"
-import brunchesRouter from "./routes/brunches.js"
-import archeveRouter from "./routes/archeve.js"
+import ProductRouter from "./Routes/product.js"
+import CategoryRouter from "./Routes/categories.js"
+import userRouter from "./Routes/user.js"
+import orderRouter from "./Routes/order.js"
+import servicesRouter from "./Routes/services.js"
+import brunchesRouter from "./Routes/brunches.js"
+import archeveRouter from "./Routes/archeve.js"
 import {expressjwt} from "express-jwt"
 import { createError } from "./utils/error.js";
 import usersApointmentsRouter from "./Routes/userApointments.js";
@@ -81,10 +81,10 @@ mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URI,() => console.log("DB Connected"))
 .catch(e=>console.log(e));
 
-const port = process.env.PORT;
-app.listen(port, () => {
-  console.log(`App is running on port ${port}`);
-});
+// const port = process.env.PORT;
+// app.listen(port, () => {
+//   console.log(`App is running on port ${port}`);
+// });
 
 
 var server = app.listen(process.env.PORT || 3000, function () {
