@@ -1,0 +1,36 @@
+schema Branch
+ {
+    Branchname {
+        type:String,
+        requaired:true,
+    },
+    location {
+        city {
+            type:String,
+        },
+    },
+    tecniqal [{
+        type:user-schema,
+        requaired:true,
+    }],
+    apointments {
+        available-apointments [{
+        type:apointments-schema,
+        requaired:true,
+    }],
+        client-apointments [{
+        type:users-apointments-schema,
+        requaired:true,
+}],
+        }
+    top-tecniqal {
+        type:top-schema,
+
+    },
+    archive [{
+        type:archive-schema,
+    }],
+
+
+
+}
