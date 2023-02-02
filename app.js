@@ -32,21 +32,21 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use("/public/uploads",express.static(__dirname+"/public/uploads"))
 // userVerify
-app.use(expressjwt({
-  secret,
-  algorithms: ["HS256"],
-  isRevoked: isRevoked
-}).unless({
-  path: [
-    {url: /\/public\/uploads(.*)/ , methods: ["GET", "OPTIONS"]},
-    {url: /\/api\/product(.*)/ , methods: ["GET", "OPTIONS"]},
-    {url: /\/api\/category(.*)/ , methods: ["GET", "OPTIONS"]},
-    {url: /\/api\/brunch(.*)/ , methods: ["GET", "OPTIONS"]},
-    "/api/user/login",
-    "/api/user/register",
-  ]
-})
-)
+// app.use(expressjwt({
+//   secret,
+//   algorithms: ["HS256"],
+//   isRevoked: isRevoked
+// }).unless({
+//   path: [
+//     {url: /\/public\/uploads(.*)/ , methods: ["GET", "OPTIONS"]},
+//     {url: /\/api\/product(.*)/ , methods: ["GET", "OPTIONS"]},
+//     {url: /\/api\/category(.*)/ , methods: ["GET", "OPTIONS"]},
+//     {url: /\/api\/brunch(.*)/ , methods: ["GET", "OPTIONS"]},
+//     "/api/user/login",
+//     "/api/user/register",
+//   ]
+// })
+// )
  async function isRevoked(req,token,done) {
   if (token.payload.isAdmin === false) {
     return true
