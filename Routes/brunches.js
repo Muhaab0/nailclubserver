@@ -49,7 +49,7 @@ router.get("/", async (req,res,next) => {
             path:"top", populate:{path: "finish" , select:"finish , user , name"}
              }).populate({
             path: "top",populate:{path: "prep" , select:"prep , user , name"}   
-             }).populate({ path : "tecniqal"  , select:"user", populate:{path:"user"}})
+             }).populate({ path : "tecniqal"  , select:"user , prep , finish", populate:{path:"user" , select:"profileImg , name "}})
              
         
         if(!Brunch) {
