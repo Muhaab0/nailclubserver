@@ -46,9 +46,9 @@ router.get("/", async (req,res,next) => {
     try {
         
         const Brunch = await Brunches.find().populate({    
-            path:"top", populate:{path: "finish" , select:"finish , user , name"}
+            path:"top", populate:{path: "finish" , select:"finish , user , name",populate:{path: "user", select:"name , profileImg"}}
              }).populate({
-            path: "top",populate:{path: "prep" , select:"prep , user , name"}   
+            path: "top",populate:{path: "prep" , select:"prep , user , name",populate:{path: "user", select:"name , profileImg"}}   
              }).populate({ path : "tecniqal"  , select:"user , prep , finish", populate:{path:"user" , select:"profileImg , name "}})
              
         
