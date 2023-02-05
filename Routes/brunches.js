@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
         if(isValid) {
             uploadError = null
         }
-      cb(uploadError, 'public/uploads')
+      cb(uploadError, 'https://github.com/Muhaab0/nailclubserver/tree/master/public/uploads')
     },
     filename: function (req, file, cb) {
       const filesName = file.originalname.split(" ").join("-");
