@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
         if(isValid) {
             uploadError = null
         }
-      cb(uploadError, 'https://github.com/Muhaab0/nailclubserver/tree/master/public/uploads')
+      cb(uploadError, 'public/uploads')
     },
     filename: function (req, file, cb) {
       const filesName = file.originalname.split(" ").join("-");
@@ -208,7 +208,7 @@ router.get("/top/finish/:id", async (req,res,next)=>{
 router.put("/images/:id",uploadOptions.array("images",10), async (req,res,next)=>{    
     const files = req.files
     let  imagesPaths = [];
-    const basePath = `https://github.com/Muhaab0/nailclubserver/blob/master/public/uploads/`;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
     if(files) {
         files.map(file=>{
             imagesPaths.push(`${basePath}${file.filename}`);
