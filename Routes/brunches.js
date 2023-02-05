@@ -208,7 +208,7 @@ router.get("/top/finish/:id", async (req,res,next)=>{
 router.put("/images/:id",uploadOptions.array("images",10), async (req,res,next)=>{    
     const files = req.files
     let  imagesPaths = [];
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    const basePath = `https://github.com/Muhaab0/nailclubserver/blob/master/public/uploads/`;
     if(files) {
         files.map(file=>{
             imagesPaths.push(`${basePath}${file.filename}`);
