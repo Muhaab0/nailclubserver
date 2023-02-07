@@ -170,8 +170,8 @@ router.post("/login", async (req,res,next)=> {
                     isAdmin: user.isAdmin,
                     isTecniqal: user.isTecniqal,
                     isCallCenter: user.isCallCenter,
-                    email:email,
-                    phone:phone
+                    emails:user.email,
+                    phone:user.phone
 
                 },
                 secret,
