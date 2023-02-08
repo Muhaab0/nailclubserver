@@ -101,12 +101,12 @@ router.get("/findDays/:id", async (req,res,next) => {
 
         {$match: {'brunch': mongoose.Types.ObjectId(req.params.id)}},
 
-//         { $lookup: {
-//        from: "times",
-//         localField: "times",
-//         foreignField: "_id",
-//         as: "times"
-//   }}  
+        { $lookup: {
+       from: "times",
+        localField: "times",
+        foreignField: "_id",
+        as: "times"
+  }}  
     ])
     
     if(!Dates) {
