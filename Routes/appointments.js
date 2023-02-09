@@ -1,42 +1,25 @@
-import express, { application } from "express";
-import Apointments from "../models/Apointments.js";
+import express from "express";
 import Brunches from "../models/Brunches.js";
 import Days from "../models/Days.js";
 import Times from "../models/Times.js";
 import { createError } from "../utils/error.js";
-import mongoose from "mongoose"
+import mongoose, { isObjectIdOrHexString } from "mongoose"
 const router = express.Router();
 
-
-router.get("/times", async (req,res ,next) => {
-    try {
-        const times = await Times.find()
-        if(!times) {
-           return next(createError("no times found"))
-        }
-        res.status(200).send(times);
-    } catch (error) {
-     next(error)   
-    }
-})
-
-router.get("/times/:id", async (req,res ,next) => {
-    try {
-        const times = await Times.findById(req.params.id)
-        if(!times) {
-           return next(createError(404,"no times found"))
-        }
-        res.status(200).send(times);
-    } catch (error) {
-     next(error)   
-    }
-})
 
 
 
 
 router.get("/days/:id", async (req,res) => {
     const apointments = await Days.find({brunch:req.params.id}).populate("times", "time")
+    if(!apointments) {
+        res.status(500).json({success:false})
+    }
+    res.status(200).send(apointments);
+})
+
+router.get("/spicDay/:id", async (req,res) => {
+    const apointments = await Days.findById(req.params.id).populate("times")
     if(!apointments) {
         res.status(500).json({success:false})
     }
@@ -50,7 +33,7 @@ router.get("/findDay/:id", async (req,res,next) => {
     const limit = req.query.limit
     
     let d = new Date();
-    d.setDate(d.getDate());
+    d.setDate(d.getDate()-1);
     
     
     let ed = new Date();
@@ -86,7 +69,7 @@ router.get("/findDays/:id", async (req,res,next) => {
     const limit = req.query.limit
     
     let d = new Date();
-    d.setDate(d.getDate());
+    d.setDate(d.getDate()-1);
     
     
     // let ed = new Date();
@@ -97,8 +80,6 @@ router.get("/findDays/:id", async (req,res,next) => {
     const Dates = await Days.aggregate([
 
         {$match: {'day': {$gte: d}}},
-        {$sort: {'day':1}},
-
         {$match: {'brunch': mongoose.Types.ObjectId(req.params.id)}},
 
         { $lookup: {
@@ -107,13 +88,13 @@ router.get("/findDays/:id", async (req,res,next) => {
         foreignField: "_id",
         as: "times"
   }}  
-    ])
+    ]).sort("day")
     
     if(!Dates) {
         next(404,"no appointment")
     }
     res.status(200).send(Dates);
-        
+    console.log(Dates.length)
     } catch (error) {
         next(error)
     }
@@ -124,7 +105,7 @@ router.get("/find7Days/:id", async (req,res,next) => {
     const limit = req.query.limit
     
     let d = new Date();
-    d.setDate(d.getDate());
+    d.setDate(d.getDate()-1);
     
     
     let ed = new Date();
@@ -151,7 +132,7 @@ router.get("/find7Days/:id", async (req,res,next) => {
         next(404,"no appointment")
     }
     res.status(200).send(Dates);
-        
+    console.log(Dates.length)
     } catch (error) {
         next(error)
     }
@@ -162,11 +143,11 @@ router.get("/find30Days/:id", async (req,res,next) => {
     const limit = req.query.limit
     
     let d = new Date();
-    d.setDate(d.getDate());
+    d.setDate(d.getDate()-1);
     
-    
+    console.log(d)
     let ed = new Date();
-    ed.setDate(ed.getDate()+30);
+    ed.setDate(ed.getDate()+25);
     
     console.log(ed)
     try {
@@ -189,7 +170,7 @@ router.get("/find30Days/:id", async (req,res,next) => {
         next(404,"no appointment")
     }
     res.status(200).send(Dates);
-        
+
     } catch (error) {
         next(error)
     }
@@ -208,9 +189,10 @@ router.get("/getDuplicate", async (req,res,next)=>{
                 // {$match: {'brunch': mongoose.Types.ObjectId(req.params.id)}},
 
                 { $unwind : "$day"},
+                { $unwind : "$brunch"},
                 {"$group" : { "_id": "$day", "count": { "$sum": 1 } } },
                 {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } }, 
-                // {"$project": {"day" : "$_id", "_id" : 0} },
+                {"$project": {"day" : "$_id", "_id" : 0} },
                 {"$sort":{day: 1}}
             ], { allowDiskUse: true }
             )
@@ -226,22 +208,38 @@ router.get("/getDuplicate", async (req,res,next)=>{
 
 
 router.post("/add30days/:id", async (req,res,next)=>{
-    const params = req.params.id
-    console.log(params)
-    const now = new Date()
-    const startTime = new Date(2017, 3, 22, 11, 0);
-    const endTime = new Date(2017, 3, 22, 20, 0, 0);
+
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+      }
+      
+      const now = new Date()
+    const startTime = new Date(2017, 3, 22, 10, 0);
+    const endTime = new Date(2017, 3, 22, 20, 0);
     const times = [];
     while(startTime <= endTime) {
-        startTime.setMinutes(startTime.getMinutes() + 30);
-    times.push(startTime.toTimeString().slice(0,5))
+    startTime.setMinutes(startTime.getMinutes() + 30);
+    const timeFormated = formatAMPM(startTime)
+    times.push(timeFormated)
     }
+
+
+
 
     const startDate = new Date();
     let endDate = new Date();
-    endDate.setDate(endDate.getDate()+35)
+    endDate.setDate(endDate.getDate()+29)
     const date = new Date(startDate);
     const dates = [];
+
     
     while (date <= endDate) {
         
@@ -249,16 +247,36 @@ router.post("/add30days/:id", async (req,res,next)=>{
         date.setDate(date.getDate() + 1);
     }
     let dayResolved = []
+
+            const brunch = await Brunches.findById(req.params.id)
+            if (!brunch) {
+                return next(createError(404,"not found brunch"))
+            }
+
     try {
         const saveDate = Promise.all(
             //time
             dates.map(async (day) => {
 
-                      const Duplicated = await Days.findOne({day:day})
-                       let dayString = Duplicated?.day.toDateString()
+                      const duplicated = await Days.find({day:day})
+                    const duplicatedBrunch = Promise.all(
+                        duplicated.map((duplic) => {
+                            let brunched = duplic?.brunch
+                            return brunched._id
+                        })
+                        )
+                        const DuplicatedResolv = await duplicatedBrunch;
+                        
 
-                        console.log(dayString)                     
-                            if (day === dayString) {
+                        let filter =  DuplicatedResolv.filter((dup)=>{
+                           let filtered = dup.toString() === brunch?._id.toString()
+                            return filtered
+                        })
+
+
+
+                        if (filter.length > 0) {
+                            // console.log("Duplicated")
                                 return next()
                             }
 
@@ -275,7 +293,8 @@ router.post("/add30days/:id", async (req,res,next)=>{
                         
                         //day
                         let newDay = new Days({
-                            brunch:params ,
+                            brunch:brunch.id ,
+                            date:day.toString(),
                             day:day,
                             times:timeResolved,
                         })

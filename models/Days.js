@@ -10,10 +10,14 @@ const daySchema = new mongoose.Schema(
             type: Date,
             required:true,  
           },
+        date: {
+            type: String,
+            required:true,  
+          },
         times:  [{
             type:mongoose.Schema.Types.ObjectId,
             required:true,
-            ref:"times"
+            ref:"time"
           }]
         ,
     },
