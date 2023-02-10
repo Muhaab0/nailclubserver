@@ -7,6 +7,7 @@ const userApointSchema = new mongoose.Schema(
                 required:true,
                 ref: "user",
             } ,
+            phone:{type:Number, required:true},
             day: {
                 type:mongoose.Schema.Types.ObjectId,
                 required:true,

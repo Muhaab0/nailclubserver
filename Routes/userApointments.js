@@ -74,6 +74,7 @@ router.post("/", async (req, res, next) => {
 
     let newApoint = new UsersApointments({
       user: req.body.user,
+      phone:req.body.phone,
       day: req.body.day,
       time: req.body.time,
       services: serviceRevoked,

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", async (req,res,next)=> {
     try {
-        const userList = await Services.find().select("services").populate("services")
+        const userList = await Serv.find()
         if(!userList) {
             res.status(500).json({succes:false})
         }
@@ -22,7 +22,7 @@ router.get("/", async (req,res,next)=> {
 
 router.get("/:id", async (req,res,next)=> {
     try {
-        const userList = await Services.findById(req.params.id).select("services").populate("services")
+        const userList = await Serv.findById(req.params.id)
         if(!userList) {
             res.status(500).json({succes:false})
         }
